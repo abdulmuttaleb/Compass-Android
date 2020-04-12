@@ -13,15 +13,22 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatImageView
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
-    lateinit var tempTextView:TextView
-    lateinit var mSensorManager:SensorManager
-    var mTemperature: Sensor? = null
+    lateinit var compassNeedleImageView:AppCompatImageView
 
+    lateinit var mSensorManager:SensorManager
+    var mMagenticSensor: Sensor? = null
+
+    private val DegreeStart: Float = -45f
+    private var currentDegree:Float = DegreeStart
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -36,19 +43,16 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun activityUiInit(){
-        tempTextView = findViewById(R.id.tv_temp)
+        compassNeedleImageView = findViewById(R.id.iv_compass_needle)
     }
     private fun activityInit(){
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        mTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
-        if(mTemperature == null)
-            tempTextView.text =
-                NOT_SUPPORTED_MESSAGE
+        mMagenticSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
     }
 
     override fun onResume() {
         super.onResume()
-        mSensorManager.registerListener(this, mTemperature, SensorManager.SENSOR_DELAY_NORMAL)
+        mSensorManager.registerListener(this, mMagenticSensor, SensorManager.SENSOR_DELAY_GAME)
     }
 
     override fun onPause() {
@@ -57,9 +61,21 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-       val ambient_temp = event!!.values[0]
-        tempTextView.text = "Ambient Temperature is: $ambient_temp"
-        Log.e(TAG, "sensorChanged: $ambient_temp")
+       val degree: Float = event!!.values[0]
+
+        val rotateAnimation = RotateAnimation(
+            currentDegree,
+            -degree,
+            Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, 0.5f)
+        rotateAnimation.isFillEnabled = true
+        rotateAnimation.fillAfter = true
+        rotateAnimation.duration = 210
+
+        compassNeedleImageView.startAnimation(rotateAnimation)
+        currentDegree = -degree
+
+        Log.e(TAG, "sensorChanged: $degree")
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
