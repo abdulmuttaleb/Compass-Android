@@ -1,4 +1,4 @@
-package com.taion.compass
+package com.saiko.compass
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -15,7 +15,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import kotlinx.android.synthetic.main.activity_fullscreen.*
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 

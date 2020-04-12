@@ -1,4 +1,4 @@
-package com.taion.compass
+package com.saiko.compass
 
 import org.junit.Test
 
