@@ -1,4 +1,4 @@
-package com.taion.taionapp
+package com.taion.compass
 
 import org.junit.Test
 
