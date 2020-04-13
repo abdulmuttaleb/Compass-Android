@@ -6,6 +6,15 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
 
+    signingConfigs {
+        config {
+            keyAlias 'Ahmad'
+            keyPassword 'Saiko1234'
+            storeFile file('ahmad-store-key.jks')
+            storePassword 'Saiko1234'
+        }
+    }
+
     defaultConfig {
         applicationId "com.saiko.compass"
         minSdkVersion 22
@@ -20,6 +29,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
 
