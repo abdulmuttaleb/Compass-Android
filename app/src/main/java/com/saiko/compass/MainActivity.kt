@@ -15,11 +15,14 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
+import kotlin.math.roundToLong
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
     lateinit var compassNeedleImageView:AppCompatImageView
     lateinit var compassBackImageView: AppCompatImageView
+    lateinit var degreesTextView: AppCompatTextView
 
     lateinit var mSensorManager:SensorManager
     var mOrientationSensor: Sensor? = null
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private fun activityUiInit(){
         compassNeedleImageView = findViewById(R.id.iv_compass_needle)
         compassBackImageView = findViewById(R.id.iv_compass_back)
+        degreesTextView = findViewById(R.id.tv_degrees)
     }
     private fun activityInit(){
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -72,8 +76,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         compassBackImageView.startAnimation(rotateAnimation)
         currentDegree = -degree
-
-        Log.e(TAG, "sensorChanged: $degree")
+        degreesTextView.text = "%.1f".format(degree).plus("°")
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
