@@ -9,32 +9,29 @@ import android.hardware.SensorManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
-import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
     lateinit var compassNeedleImageView:AppCompatImageView
+    lateinit var compassBackImageView: AppCompatImageView
 
     lateinit var mSensorManager:SensorManager
-    var mMagenticSensor: Sensor? = null
+    var mOrientationSensor: Sensor? = null
 
-    private val DegreeStart: Float = -45f
+    private val DegreeStart: Float = 0f
     private var currentDegree:Float = DegreeStart
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fullscreen)
+        setContentView(R.layout.activity_main)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         supportActionBar!!.hide()
 
@@ -44,15 +41,16 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private fun activityUiInit(){
         compassNeedleImageView = findViewById(R.id.iv_compass_needle)
+        compassBackImageView = findViewById(R.id.iv_compass_back)
     }
     private fun activityInit(){
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        mMagenticSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
+        mOrientationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
     }
 
     override fun onResume() {
         super.onResume()
-        mSensorManager.registerListener(this, mMagenticSensor, SensorManager.SENSOR_DELAY_GAME)
+        mSensorManager.registerListener(this, mOrientationSensor, SensorManager.SENSOR_DELAY_GAME)
     }
 
     override fun onPause() {
@@ -72,7 +70,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         rotateAnimation.fillAfter = true
         rotateAnimation.duration = 210
 
-        compassNeedleImageView.startAnimation(rotateAnimation)
+        compassBackImageView.startAnimation(rotateAnimation)
         currentDegree = -degree
 
         Log.e(TAG, "sensorChanged: $degree")
